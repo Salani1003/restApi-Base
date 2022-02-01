@@ -29,8 +29,10 @@ const userPost = async (req = request, res = response) => {
   });
 };
 
-const userDelete = async (req, res = response) => {
+const userDelete = async (req = request, res = response) => {
   const {id} = req.params;
+  //const userAuth = req.userAuth;
+  // console.log("user en el controlador", userAuth);
   const user = await User.findByIdAndUpdate(id, {estado: false}, {new: true});
   res.json({
     user,
