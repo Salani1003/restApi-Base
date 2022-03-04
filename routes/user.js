@@ -5,17 +5,15 @@ const {
   esRolValido,
   esEmailExistente,
   existeUsuarioPorID,
+  estadoUsuario,
 } = require("../helpers/db-validators");
-/* const {validarCampos} = require("../middlewares/validar-campos");
-const {esAdminRol, tieneRol} = require("../middlewares/validar-roles");
-const {validarJWT} = require("../middlewares/validarJWT"); */
 const {
   validarCampos,
   validarJWT,
   esAdminRol,
   tieneRol,
 } = require("../middlewares");
-const {validarPost} = require("../middlewares/validarUsers");
+
 const router = Router();
 
 router.get("/", userGet);
@@ -23,6 +21,7 @@ router.put(
   "/:id",
   [
     check("id", "El ID ingresado no es valido").isMongoId(),
+    check("id").custom(estadoUsuario),
     check("id").custom(existeUsuarioPorID),
     check("rol").custom(esRolValido),
     validarCampos,
@@ -30,7 +29,20 @@ router.put(
 
   userPut
 );
-router.post("/", validarPost, userPost);
+router.post(
+  "/",
+  [
+    check("correo", "El correo no es valido").isEmail(),
+    check("correo").custom(esEmailExistente),
+    check("nombre", "El nombre es obligatorio").not().isEmpty(),
+    check("password", "El password debe tener mas de 6 caracteres").isLength({
+      min: 6,
+    }),
+    check("rol").custom(esRolValido), // tambien podria poner .custom((rol)=> esRolValido(rol)) pero como el primer argumento es el mismo argumento que se manda a la funcion se omite, entonces el argumento que este recibiendo el custom se envia la funcion
+    validarCampos,
+  ],
+  userPost
+);
 router.delete(
   "/:id",
   [
@@ -38,6 +50,7 @@ router.delete(
     //esAdminRol,
     tieneRol("ADMIN_ROL", "VENTAS_ROLE"),
     check("id", "El ID ingresado no es valido").isMongoId(),
+    check("id").custom(estadoUsuario),
     check("id").custom(existeUsuarioPorID),
     validarCampos,
   ],

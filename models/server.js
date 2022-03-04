@@ -8,8 +8,13 @@ class Server {
     //Middlewares --> funciones que añaden funcionalidad al webserver
     this.middlewares();
     //Rutas de mi App
-    this.userPath = "/api/user";
-    this.authPath = "/api/auth";
+    this.path = {
+      userPath: "/api/user",
+      buscarPath: "/api/buscar",
+      authPath: "/api/auth",
+      categorias: "/api/categorias",
+      productos: "/api/productos",
+    };
     this.routes();
 
     //Conectar a base de datos
@@ -31,8 +36,11 @@ class Server {
     this.app.use(express.json());
   }
   routes() {
-    this.app.use(this.userPath, require("../routes/user"));
-    this.app.use(this.authPath, require("../routes/auth"));
+    this.app.use(this.path.userPath, require("../routes/user"));
+    this.app.use(this.path.authPath, require("../routes/auth"));
+    this.app.use(this.path.buscarPath, require("../routes/buscar"));
+    this.app.use(this.path.categorias, require("../routes/categorias"));
+    this.app.use(this.path.productos, require("../routes/productos"));
   }
 
   listen() {
