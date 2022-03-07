@@ -18,6 +18,9 @@ const ProductoShema = Schema({
     type: String,
     default: "",
   },
+  img: {
+    type: String,
+  },
   disponible: {
     type: Boolean,
     default: true,

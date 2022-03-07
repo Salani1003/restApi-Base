@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const {Categoria, Producto} = require("../models");
 const Role = require("../models/rol");
 const User = require("../models/user");
@@ -57,6 +58,16 @@ const estadoProducto = async (id) => {
     throw new Error(`El producto fue dado de baja`);
   }
 };
+
+const coleccionesPermitidas = (coleccion = "", colecciones = []) => {
+  const incluida = colecciones.includes(coleccion);
+  if (!incluida) {
+    throw new Error(
+      `La coleccion ${coleccion} no esta permitida, Pruebe con :${colecciones}`
+    );
+  }
+  return true;
+};
 module.exports = {
   esRolValido,
   esEmailExistente,
@@ -66,4 +77,5 @@ module.exports = {
   estadoProducto,
   estadoCategoria,
   estadoUsuario,
+  coleccionesPermitidas,
 };
